@@ -472,4 +472,11 @@ gradle-app.setting
 ### Gradle Patch ###
 **/build/
 
+# Excluding MySQL socket files
+*.sock
+
+#custom
+.data/
+
+
 # End of https://www.gitignore.io/api/java,macos,maven,gradle,kotlin,windows,intellij,jetbrains,intellij+all,intellij+iml,jetbrains+all,jetbrains+iml
