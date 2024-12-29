@@ -1,0 +1,29 @@
+spring:
+  cloud:
+    function:
+      definition: myProducer;myConsumer; #외부에서 사용할 bean 이름 지정
+    stream:
+      function:
+        bindings:
+          myProducer-out-0: producer-test #bean과 채널을 바인딩
+          myConsumer-in-0: consumer-test  #bean과 채널을 바인딩
+      kafka: #kafka 관련 설정
+        binder:
+          brokers: localhost:9092,localhost:9093,localhost:9094
+          auto-create-topics: false
+          required-acks: 0
+          configuration:
+            key.serializer: org.apache.kafka.common.serialization.StringSerializer
+        bindings:
+          consumer-test:
+            consumer:
+              start-offset: latest
+      bindings:
+        producer-test: #producer 채널 설정
+          destination: my-json-topic
+          content-type: application/json
+        consumer-test: #consumer 채널 설정
+          destination: my-json-topic
+          group: test-consumer-group
+          consumer: #consumer 설정
+            concurrency: 1
