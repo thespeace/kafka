@@ -107,12 +107,3 @@ Spring Application이 Kafka, RabbitMQ와 같은 외부 메시징 큐와 직접 �
     * `src/main/java/com/thespeace/kafkahandson/producer/MyProducer.java`
   * 메시지를 발행할 트리거 작성
     * `src/main/java/com/thespeace/kafkahandson/api/MyController.java`
-
-<br>
-
-* 이제 application을 실행하여 메시지를 발행하고 확인해보자.
-  ```bash
-  curl -X POST http://localhost:8080/message \
-  -H "Content-Type: application/json" \
-  -d '{"content": "Hello, World!"}'
-  ```
