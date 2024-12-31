@@ -1,29 +1,47 @@
 spring:
-  cloud:
-    function:
-      definition: myProducer;myConsumer; #외부에서 사용할 bean 이름 지정
-    stream:
-      function:
-        bindings:
-          myProducer-out-0: producer-test #bean과 채널을 바인딩
-          myConsumer-in-0: consumer-test  #bean과 채널을 바인딩
-      kafka: #kafka 관련 설정
-        binder:
-          brokers: localhost:9092,localhost:9093,localhost:9094
-          auto-create-topics: false
-          required-acks: 0
-          configuration:
-            key.serializer: org.apache.kafka.common.serialization.StringSerializer
-        bindings:
-          consumer-test:
-            consumer:
-              start-offset: latest
-      bindings:
-        producer-test: #producer 채널 설정
-          destination: my-json-topic
-          content-type: application/json
-        consumer-test: #consumer 채널 설정
-          destination: my-json-topic
-          group: test-consumer-group
-          consumer: #consumer 설정
-            concurrency: 1
+#  spring-kafka
+  kafka:
+    bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: latest
+      properties:
+        spring.json.trusted.packages: "*" # JsonDeserializer를 사용할때 경로지정 필수
+        allow.auto.create.topic: false # 자동 설정 제한
+    listener:
+      concurrency: 1
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: 1 # 0은 발행 결과를 신경쓰지않음, 1은 partitions으로부터 결과를 응답받음, -1은 follow partitions 복제도 완료 결과 응답, 확인되지 않으면 retry
+
+# spring-cloud-stream
+#  cloud:
+#    function:
+#      definition: myProducer;myConsumer; #외부에서 사용할 bean 이름 지정
+#    stream:
+#      function:
+#        bindings:
+#          myProducer-out-0: producer-test #bean과 채널을 바인딩
+#          myConsumer-in-0: consumer-test  #bean과 채널을 바인딩
+#      kafka: #kafka 관련 설정
+#        binder:
+#          brokers: localhost:9092,localhost:9093,localhost:9094
+#          auto-create-topics: false
+#          required-acks: 0
+#          configuration:
+#            key.serializer: org.apache.kafka.common.serialization.StringSerializer
+#        bindings:
+#          consumer-test:
+#            consumer:
+#              start-offset: latest
+#      bindings:
+#        producer-test: #producer 채널 설정
+#          destination: my-json-topic
+#          content-type: application/json
+#        consumer-test: #consumer 채널 설정
+#          destination: my-json-topic
+#          group: test-consumer-group
+#          consumer: #consumer 설정
+#            concurrency: 1

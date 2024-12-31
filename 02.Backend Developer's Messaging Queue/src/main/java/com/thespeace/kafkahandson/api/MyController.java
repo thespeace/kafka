@@ -21,6 +21,7 @@ public class MyController {
 
     /**
      * <h2>메시지를 발행할 트리거</h2>
+     * @link <a href="http://localhost:8080/swagger-ui/index.html">swagger-ui</a>
      */
     @PostMapping("/message")
     void message(
