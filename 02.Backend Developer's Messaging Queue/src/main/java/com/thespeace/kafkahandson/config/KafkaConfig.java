@@ -31,12 +31,13 @@ public class KafkaConfig {
 
     @Bean
     @Primary
-    @ConfigurationProperties("spring.kafka")
+    @ConfigurationProperties("spring.kafka.json")
     public KafkaProperties kafkaProperties() {
         return new KafkaProperties();
     }
 
     @Bean
+    @Primary
     public ConsumerFactory<String, Object> consumerFactory(KafkaProperties kafkaProperties) {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getBootstrapServers());
@@ -49,6 +50,7 @@ public class KafkaConfig {
     }
 
     @Bean
+    @Primary
     public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory(
         ConsumerFactory<String, Object> consumerFactory
     ) {
@@ -59,6 +61,7 @@ public class KafkaConfig {
     }
 
     @Bean
+    @Primary
     public ProducerFactory<String, Object> producerFactory(KafkaProperties kafkaProperties) {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getBootstrapServers());
@@ -69,6 +72,7 @@ public class KafkaConfig {
     }
 
     @Bean
+    @Primary
     public KafkaTemplate<String, ?> kafkaTemplate(KafkaProperties kafkaProperties) {
         return new KafkaTemplate<>(producerFactory(kafkaProperties));
     }
