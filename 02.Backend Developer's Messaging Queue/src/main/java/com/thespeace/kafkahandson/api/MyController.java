@@ -1,8 +1,8 @@
 package com.thespeace.kafkahandson.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.thespeace.kafkahandson.model.MyMessage;
 import com.thespeace.kafkahandson.producer.MyProducer;
-import com.thespeace.kafkahandson.producer.MySecondProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 public class MyController {
 
     private final MyProducer myProducer;
-    private final MySecondProducer mySecondProducer;
 
     @RequestMapping("/hello")
     String hello() {
@@ -28,14 +27,11 @@ public class MyController {
     void message(
         @RequestBody MyMessage message
     ) {
-        myProducer.sendMessage(message);
+        try {
+            myProducer.sendMessage(message);
+        } catch (JsonProcessingException e) {
+            e.fillInStackTrace();
+        }
     }
 
-    @PostMapping("/second-message/{key}")
-    void message(
-        @PathVariable String key,
-        @RequestBody String message
-    ) {
-        mySecondProducer.sendMessageWithKey(key, message);
-    }
 }

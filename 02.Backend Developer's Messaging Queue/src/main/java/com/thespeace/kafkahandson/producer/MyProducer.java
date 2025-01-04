@@ -1,5 +1,7 @@
 package com.thespeace.kafkahandson.producer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thespeace.kafkahandson.model.MyMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -11,10 +13,15 @@ import static com.thespeace.kafkahandson.model.Topic.MY_JSON_TOPIC;
 @Component
 public class MyProducer {
 
-    private final KafkaTemplate<String, MyMessage> kafkaTemplate;
+    ObjectMapper objectMapper = new ObjectMapper();
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
-    public void sendMessage(MyMessage myMessage) {
-        kafkaTemplate.send(MY_JSON_TOPIC, String.valueOf(myMessage.getAge()), myMessage);
+    public void sendMessage(MyMessage myMessage) throws JsonProcessingException {
+        kafkaTemplate.send(
+            MY_JSON_TOPIC,
+            String.valueOf(myMessage.getAge()),
+            objectMapper.writeValueAsString(myMessage)
+        );
     }
 
 }
