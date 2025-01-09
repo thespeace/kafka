@@ -14,7 +14,7 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
-      acks: 0 # 0은 발행 결과를 신경쓰지않음, 1은 partitions으로부터 결과를 응답받음, -1은 follow partitions 복제도 완료 결과 응답, 확인되지 않으면 retry
+      acks: -1 # 0은 발행 결과를 신경쓰지않음, 1은 partitions으로부터 결과를 응답받음, -1은 follow partitions 복제도 완료 결과 응답, 확인되지 않으면 retry
 
 # spring-cloud-stream
 #  cloud:

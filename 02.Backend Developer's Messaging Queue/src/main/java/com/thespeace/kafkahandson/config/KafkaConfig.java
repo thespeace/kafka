@@ -106,6 +106,7 @@ public class KafkaConfig {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, kafkaProperties.getProducer().getKeySerializer());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, kafkaProperties.getProducer().getValueSerializer());
         props.put(ProducerConfig.ACKS_CONFIG, kafkaProperties.getProducer().getAcks());
+        props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true"); // EOS 적용
         return new DefaultKafkaProducerFactory<>(props);
     }
 
