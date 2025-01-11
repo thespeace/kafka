@@ -41,3 +41,18 @@ acks: -1
 //KafkaConfig.java / producerFactory()
 props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true"); // EOS 적용
 ```
+
+<br>
+
+## 멱등성 보장
+EOS 설정해도 Producer 측에서 멱등한 것이지 Consumer 측에서 멱등하기는 굉장히 어렵다.  
+결국 Consume이라는 것은 Commit 타이밍이랑 데이터 처리 타이밍이 완전히 동일하기 어렵기 때문에 Rebalancing에 영향을 받는 것이고, 중복 Consume은 필연적이라고 볼 수 있다.  
+결국 로직이 멱등해야 한다. 따라서 `Consumer 측에서 보안 로직을 적용하여 멱등성을 보장해야 한다.`
+
+또한 멱등성 보장이란 절대적인 룰은 없고, 서비스의 정책에 따라 바뀔 수 있다.  
+어떻게 처리를 해야 완전히 멱등하지 않아도 관심사의 멱등성을 보장 할 수 있는 지 아래와 같은 여러 방법을 사용할 수 있다.
+
+* DB에서 데이터 write할 때, Upsert를 사용하여 멱등성을 보장
+* Unique 키 값을 가지고 EOS와 비슷한 원리로 두 번째 들어온 메시지를 인지할 수 있게해서 멱등하게 컨트롤
+* 메시지를 받을 때 TimeStamp 를 함께 받아서 Id값과 TimeStamp를 같이 사용해서 중복 여부를 판별
+* version을 관리해서 낙관적인 Lock을 sync 하는 방식
