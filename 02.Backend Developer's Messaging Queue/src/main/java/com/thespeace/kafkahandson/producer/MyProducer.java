@@ -14,13 +14,14 @@ import static com.thespeace.kafkahandson.model.Topic.MY_JSON_TOPIC;
 public class MyProducer {
 
     ObjectMapper objectMapper = new ObjectMapper();
+
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    public void sendMessage(MyMessage myMessage) throws JsonProcessingException {
+    public void sendMessage(MyMessage message) throws JsonProcessingException {
         kafkaTemplate.send(
             MY_JSON_TOPIC,
-            String.valueOf(myMessage.getAge()),
-            objectMapper.writeValueAsString(myMessage)
+            String.valueOf(message.getAge()),
+            objectMapper.writeValueAsString(message)
         );
     }
 

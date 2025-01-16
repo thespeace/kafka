@@ -12,15 +12,17 @@ import java.util.List;
 import static com.thespeace.kafkahandson.model.Topic.MY_JSON_TOPIC;
 
 @Component
-public class MyThirdConsumer {
+public class MyBatchConsumer {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @KafkaListener(
             topics = { MY_JSON_TOPIC },
-            groupId = "batch-test-consumer-group",
+            groupId = "batch-test-consumer-group", // MyConsumer의 groupId와 반드시 달라야 함!
             containerFactory = "batchKafkaListenerContainerFactory"
     )
     public void accept(List<ConsumerRecord<String, String>> messages) {
-        ObjectMapper objectMapper = new ObjectMapper();
+        System.out.println("[Batch Consumer] Batch message arrived! - count " + messages.size());
         messages.forEach(message -> {
             MyMessage myMessage;
             try {
@@ -28,7 +30,7 @@ public class MyThirdConsumer {
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println("ㄴ [Third Consumer] Value " + myMessage + " / Offset - "+ message.offset() + ", partition -" + message.partition());
+            System.out.println("ㄴ [Batch Consumer] Value - " + myMessage + " / Offset - " + message.offset() + " / Partition - " + message.partition());
         });
     }
 }
