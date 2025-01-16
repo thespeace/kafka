@@ -25,11 +25,13 @@ public class MyConsumer {
 
     @KafkaListener(
             topics = { MY_JSON_TOPIC },
-            groupId = "test-consumer-group"
+            groupId = "test-consumer-group",
+            concurrency = "1" // kafkaConfig -> kafkaListener, 숫자를 늘려 처리량 개선(최대 갯수는 Leader Partition 수)
     )
     public void listen(ConsumerRecord<String, String> message, Acknowledgment acknowledgment) throws JsonProcessingException {
         MyMessage myMessage = objectMapper.readValue(message.value(), MyMessage.class);
         this.printPayloadIfFirstMessage(myMessage);
+//        Thread.sleep(1000); // 하나의 데이터를 처리할 때, 1초가 걸리도록 설정해서 처리량을 console로 확인해보자.
         acknowledgment.acknowledge();
     }
 

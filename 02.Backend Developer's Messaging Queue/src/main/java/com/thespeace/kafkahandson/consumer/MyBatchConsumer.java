@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thespeace.kafkahandson.model.MyMessage;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,9 +20,10 @@ public class MyBatchConsumer {
     @KafkaListener(
             topics = { MY_JSON_TOPIC },
             groupId = "batch-test-consumer-group", // MyConsumer의 groupId와 반드시 달라야 함!
-            containerFactory = "batchKafkaListenerContainerFactory"
+            containerFactory = "batchKafkaListenerContainerFactory",
+            concurrency = "3" // kafkaConfig -> kafkaListener, 숫자를 늘려 처리량 개선(최대 갯수는 Leader Partition 수)
     )
-    public void accept(List<ConsumerRecord<String, String>> messages) {
+    public void accept(List<ConsumerRecord<String, String>> messages, Acknowledgment acknowledgment) {
         System.out.println("[Batch Consumer] Batch message arrived! - count " + messages.size());
         messages.forEach(message -> {
             MyMessage myMessage;
@@ -30,7 +32,9 @@ public class MyBatchConsumer {
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println("ㄴ [Batch Consumer] Value - " + myMessage + " / Offset - " + message.offset() + " / Partition - " + message.partition());
+            System.out.println("ㄴ [Batch Consumer(" + Thread.currentThread().getId() + ")] " + "[Partition - " + message.partition() + " / Offset - " + message.offset() + "] " + myMessage);
         });
+
+        acknowledgment.acknowledge();
     }
 }
