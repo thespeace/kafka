@@ -15,6 +15,16 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
       acks: -1 # 0은 발행 결과를 신경쓰지않음, 1은 partitions으로부터 결과를 응답받음, -1은 follow partitions 복제도 완료 결과 응답, 확인되지 않으면 retry
+  datasource:
+    url: jdbc:mysql://localhost:3306/campus?serverTimezone=Asia/Seoul
+    username: myuser
+    password: mypassword
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
 
 # spring-cloud-stream
 #  cloud:
