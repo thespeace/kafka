@@ -49,7 +49,7 @@ public class MyServiceImpl implements MyService {
      * <p>애플리케이션단에서 CDC 니즈를 충족하려면 결국에는 Dual Write 개념이 적용이 되는데, 어느정도 원자성을 갖게 하기 위해 해당 annotation이 필요하다.</p>
      * <p>하지만 완벽한 원자성을 갖기는 어려운데, 만약 제일 마지막에 예외가 발생한다면 DB에서는 Rollback이 적용되지만 Produce는 Rollback이 되지 않는다.</p>
      */
-    @Override
+    /*@Override
     @Transactional
     public MyModel save(MyModel model) { // CREATE: model.getId() == null / UPDATE: model.getId() != null
         OperationType operationType = model.getId() == null ? OperationType.CREATE : OperationType.UPDATE;
@@ -66,9 +66,16 @@ public class MyServiceImpl implements MyService {
             )
         );
         return resultModel;
-    }
+    }*/
 
     @Override
+    public MyModel save(MyModel model) { // C/U
+        MyEntity entity = myJpaRepository.save(MyModelConverter.toEntity(model));
+        MyModel resultModel = MyModelConverter.toModel(entity);
+        return resultModel;
+    }
+
+    /*@Override
     @Transactional
     public void delete(Integer id) { // D
         myJpaRepository.deleteById(id);
@@ -80,5 +87,10 @@ public class MyServiceImpl implements MyService {
                 OperationType.DELETE
             )
         );
+    }*/
+
+    @Override
+    public void delete(Integer id) { // D
+        myJpaRepository.deleteById(id);
     }
 }
