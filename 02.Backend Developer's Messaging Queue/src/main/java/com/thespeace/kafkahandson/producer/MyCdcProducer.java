@@ -20,6 +20,7 @@ public class MyCdcProducer {
     public void sendMessage(MyCdcMessage message) throws JsonProcessingException {
         kafkaTemplate.send(
                 MY_CDC_TOPIC,
+                String.valueOf(message.getId()), // Message Key는 서비스 요구사항에 따라 다르지만 보통 순서보장을 위해 PK를 많이 사용한다.
                 objectMapper.writeValueAsString(message)
         );
     }
